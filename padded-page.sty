@@ -1,0 +1,21 @@
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{expl3}
+
+\ProvidesExplPackage{padded-page}{2026/04/17}{1.0}
+  {LaTeX3 macro for left-padded page number variable}
+
+% New token list variable holding the page number padded by 5 spaces on the left
+\tl_new:N \g_padded_page_tl
+
+% Set the variable: 5 leading spaces followed by the current page number
+\cs_new_protected:Npn \padded_page_update: {
+  \tl_gset:Nx \g_padded_page_tl {
+    \space\space\space\space\space \int_use:N \c@page
+  }
+}
+
+% Keep the variable current at the start of each shipout
+\AddToHook { shipout/before } { \padded_page_update: }
+
+% Document-level command to access the variable
+\NewDocumentCommand \PaddedPage {} { \g_padded_page_tl }
